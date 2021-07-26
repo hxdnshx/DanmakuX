@@ -166,6 +166,11 @@ namespace Danmakux
             return this;
         }
 
+        public void ForceSetBackup(bool value)
+        {
+            _allBackupLayerRequired = value;
+        }
+
         public void ProcessBackupLayer()
         {
             if (_allBackupLayerRequired)

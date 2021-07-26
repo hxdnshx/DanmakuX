@@ -187,21 +187,51 @@ namespace Danmakux
             File.WriteAllText("resultTxt.txt", resultValue);
         }
 
-        public static void ClipChar(GraphicHelper helper, string str)
+        public static void ClipChar(GraphicHelper helper, string str, string dstStr)
         {
             var poly = new Polygon(new LinearLineSegment(
-                new PointF(-400, -1024), new PointF(800, -1024), 
-                new PointF(-400, 2048)));
+                new PointF(700, -700), new PointF(700, 700), 
+                new PointF(0, 700)));
+            int index = 0;
             foreach (var ch in str)
             {
                 var graphic = helper.graphicData[ch];
+                var dstGraphic = new GraphicInfo();
+                dstGraphic.Character = dstStr[index].ToString();
+                dstGraphic.Height = graphic.Height;
+                dstGraphic.Width = graphic.Width;
                 List<string> resultStroke = new List<string>();
                 foreach (var stroke in graphic.Strokes)
                 {
                     resultStroke.AddRange(Clip(stroke, poly));
                 }
 
-                graphic.Strokes = resultStroke;
+                dstGraphic.Strokes = resultStroke;
+                helper.graphicData[dstStr[index]] = dstGraphic;
+                index++;
+            }
+        }
+        
+        public static void ClipChar(GraphicHelper helper, LinearLineSegment clip, string str, string dstStr)
+        {
+            var poly = new Polygon(clip);
+            int index = 0;
+            foreach (var ch in str)
+            {
+                var graphic = helper.graphicData[ch];
+                var dstGraphic = new GraphicInfo();
+                dstGraphic.Character = dstStr[index].ToString();
+                dstGraphic.Height = graphic.Height;
+                dstGraphic.Width = graphic.Width;
+                List<string> resultStroke = new List<string>();
+                foreach (var stroke in graphic.Strokes)
+                {
+                    resultStroke.AddRange(Clip(stroke, poly));
+                }
+
+                dstGraphic.Strokes = resultStroke;
+                helper.graphicData[dstStr[index]] = dstGraphic;
+                index++;
             }
         }
     }

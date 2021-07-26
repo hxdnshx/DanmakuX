@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using QRCoder;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing;
 
 namespace Danmakux
 {
@@ -396,30 +398,41 @@ namespace Danmakux
                     {
                         p.x = 0;
                         p.alpha = 1;
-                        p.y = -150;
+                        p.y = -75;
                         p.rotateX = 0;
                         p.rotateY = 0;
                         p.rotateZ = 0;
-
+                        p.scale = 1.0f;
                     }, (motion, p, noChar, noStroke) =>
                     {
                         motion.Apply(strokeOffset * noStroke);
 
                         motion.Apply(0.3f, new TextProperty
                         {
-                            y = 0
+                            y = 100,
+                            scale = 1.2f
                         }, "cubic-bezier(0,.6,.2,1)");
                     });
                 }
+                
+                
+
+                var seg1 = new LinearLineSegment(
+                    new PointF(500, -700), new PointF(700, 700),
+                    new PointF(-200, 700));
+                var seg2 = new LinearLineSegment(
+                    new PointF(500, -700), new PointF(-700, -700),
+                    new PointF(-700, 700), new PointF(-200, 700));
+                ClipHelper.ClipChar(helper, seg1, "残", "攒");
+                ClipHelper.ClipChar(helper, seg2, "残", "撰");
                 
                 helper.DefParent("s6", null, new TextProperty()
                 {
                     x = 50,
                     y = 50,
-                    duration = 0.4f,
+                    duration = 4.4f,
                     scale = 1.0f
                 });
-
                 {
                     const int charDistance = 50;
                     const int rotateDiff = 25;
@@ -431,25 +444,78 @@ namespace Danmakux
                     prop.scale = 1.0f;
                     prop.fillColor = "0xeeeeee";
                     prop.alpha = 1.0f;
-                    helper.AddText("残", "s6", "s6", prop, (p, noChar, noStroke) =>
+                    helper.AddText("攒", "s6", "s6", prop, (p, noChar, noStroke) =>
                     {
                         p.x = 0;
-                        p.alpha = 1;
-                        p.y = -150;
-                        p.rotateX = 0;
-                        p.rotateY = 0;
-                        p.rotateZ = 0;
+                        p.alpha = 0;
+                        p.y = 100;
                         p.scale = 1.0f;
 
                     }, (motion, p, noChar, noStroke) =>
                     {
-                        motion.Apply(strokeOffset * noStroke);
-
-                        motion.Apply(0.3f, new TextProperty
+                        motion.Apply(.4f);
+                        motion.Apply(strokeOffset * noStroke, new TextProperty
                         {
-                            y = 0,
-                            scale = 2.0f
-                        }, "cubic-bezier(0,.6,.2,1)");
+                            alpha = 1
+                        });
+
+                        motion.Apply(1f, new TextProperty
+                        {
+                            y = -100
+                        },"cubic-bezier(0,1,0,1)", true);
+                        
+                        motion.Apply(10, isBackup: true);
+
+                        motion.Apply(1f, new TextProperty
+                        {
+                            x = 300
+                        }, "cubic-bezier(0,.5,0,1)");
+                        
+                        motion.ForceSetBackup(true);
+                    });
+                }
+                
+                
+                helper.DefParent("s7", null, new TextProperty()
+                {
+                    x = 50,
+                    y = 50,
+                    duration = 4.4f,
+                    scale = 1.0f
+                });
+                {
+                    const int charDistance = 50;
+                    const int rotateDiff = 25;
+                    const float strokeOffset = 0.002f;
+                    const float charOffset = 0f;
+                        
+                    TextProperty prop = new TextProperty();
+                    prop.duration = 14;
+                    prop.scale = 1.0f;
+                    prop.fillColor = "0xeeeeee";
+                    prop.alpha = 1.0f;
+                    helper.AddText("撰", "s7", "s7", prop, (p, noChar, noStroke) =>
+                    {
+                        p.x = 0;
+                        p.alpha = 0;
+                        p.y = 100;
+                        p.scale = 1.0f;
+
+                    }, (motion, p, noChar, noStroke) =>
+                    {
+                        motion.Apply(.4f);
+                        motion.Apply(strokeOffset * noStroke, new TextProperty
+                        {
+                            alpha = 1
+                        });
+
+                        motion.Apply(1f, new TextProperty
+                        {
+                            y = 200,
+                            alpha = 0
+                        }, "cubic-bezier(0,.3,0,1)");
+                        
+                        motion.ForceSetBackup(true);
                     });
                 }
                 
