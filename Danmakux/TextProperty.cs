@@ -20,5 +20,12 @@
         public float? anchorX { get; set; }
         
         public float? anchorY { get; set; }
+        
+        //别看了，这个不支持不锁定比例的拉伸，我为什么不用scale呢？
+        /*
+        public float? width { get; set; }
+        
+        public float? height { get; set; }
+        */
     }
 }

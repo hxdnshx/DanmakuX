@@ -13,12 +13,96 @@ namespace Danmakux
 
         
         private static string prev_template =
-            "def path pb {scale=0.1 borderWidth = 1 borderColor = 0xff11ff borderAlpha = 0.8 fillColor = 0x00a1d6 fillAlpha = 0.8 duration=30s}\ndef text cb {content = \"　\" fontSize = 10% anchorX = 0.5 anchorY = 0.5 rotateX = 180 duration=30s}\n\n";
+            "def path pb {width=10% viewBox=\"-512.0 -512.0 1024 1024\" fillColor = 0x00a1d6 fillAlpha = 1 duration=30s}\ndef text cb {content = \"　\" fontSize = 10% anchorX=.5 anchorY=.5 duration=30s x=50% y=50%}\n\n";
 
         private static Regex mediansPattern1 = new Regex(@"(.*),""medians"":\[\[\[.*\]\]\](.*)");
 
         private StringBuilder builder = new StringBuilder();
         private List<char> preparedTxt = new List<char>();
+
+        private static (float, float) GetBoundingBoxOffset(GraphicInfo info)
+        {
+            /*
+             * 在 make mea hanzi 的原文档中是这样说明边界的：
+             * strokes: List of SVG path data for each stroke of this character, ordered by proper stroke order. Each stroke is laid out on a 1024x1024 size coordinate system where:
+                The upper-left corner is at position (0, 900).
+                The lower-right corner is at position (1024, -124).
+                Note that the y-axes DECREASES as you move downwards, which is strage! To display these paths properly, you should hide render them as follows:
+             * 如果计算边界的话，会将单个汉字在整个方框中的位置丢失。
+             */
+            float xMax = 1024;
+            float xMin = 0;
+            float yMax = 900;
+            float yMin = -124;
+            info.Width = xMax - xMin;
+            info.Height = yMax - yMin;
+            return ((xMax + xMin) / 2, (yMax + yMin) / 2);
+            /*
+            float xMax = Single.MinValue;
+            float xMin = Single.MaxValue;
+            float yMax = Single.MinValue;
+            float yMin = Single.MaxValue;
+            foreach (var stroke in info.Strokes)
+            {
+                ClipHelper.SvgVisitor(stroke, (_, x, y, _, _, _, _) =>
+                {
+                    if (x > xMax) xMax = x;
+                    if (x < xMin) xMin = x;
+                    if (y > yMax) yMax = y;
+                    if (y < yMin) yMin = y;
+                });
+            }
+
+            info.Width = xMax - xMin;
+            info.Height = yMax - yMin;
+            return ((xMax + xMin) / 2, (yMax + yMin) / 2);
+            */
+        }
+
+        private static void MoveToCenter(GraphicInfo info)
+        {
+            var (xOffset,yOffset) = GetBoundingBoxOffset(info);
+            List<string> result = new List<string>();
+            foreach (var stroke in info.Strokes)
+            {
+                StringBuilder strBuilder = new StringBuilder();
+                ClipHelper.SvgVisitor(stroke, (cmd, x, y, c1X, c1Y, c2X, c2Y) =>
+                {
+                    strBuilder.Append(cmd);
+                    x = (x - xOffset) * 1;
+                    c1X = (c1X - xOffset) * 1;
+                    c2X = (c2X - xOffset) * 1;
+                    y = (y - yOffset) * -1;
+                    c1Y = (c1Y - yOffset) * -1;
+                    c2Y = (c2Y - yOffset) * -1;
+                    switch (cmd)
+                    {
+                        case "Z":
+                            break;
+                        case "M":
+                        case "L":
+                            strBuilder.Append($"{x:F1} {y:F1}");
+                            break;
+                        case "Q":
+                            //c1 == c2
+                            strBuilder.Append($" {c1X:F1} {c1Y:F1}");
+                            strBuilder.Append($" {x:F1} {y:F1}");
+                            break;
+                        case "C":
+                            strBuilder.Append($" {c1X:F1} {c1Y:F1}");
+                            strBuilder.Append($" {c2X:F1} {c2Y:F1}");
+                            strBuilder.Append($" {x:F1} {y:F1}");
+                            break;
+                        default:
+                            throw new InvalidDataException();
+                    }
+                });
+                result.Add(strBuilder.ToString());
+                strBuilder.Clear();
+            }
+
+            info.Strokes = result;
+        }
         
         public GraphicHelper(string dataPath)
         {
@@ -28,6 +112,7 @@ namespace Danmakux
             {
                 var ignoreMedian = mediansPattern1.Replace(graph, "$1$2");
                 var newGraphic = Newtonsoft.Json.JsonConvert.DeserializeObject<GraphicInfo>(ignoreMedian);
+                MoveToCenter(newGraphic);
                 graphicData.Add(newGraphic.Character.First(),newGraphic);
             }
         }
@@ -58,6 +143,8 @@ namespace Danmakux
                 if (prop.zIndex != null) builder.Append($",zIndex={prop.zIndex}");
                 if (prop.duration != null) builder.Append($",duration={prop.duration}s");
                 if (prop.alpha != null) builder.Append($",alpha={prop.alpha}");
+                if (prop.anchorX != null) builder.Append($",anchorX={prop.anchorX}");
+                if (prop.anchorY != null) builder.Append($",anchorY={prop.anchorY}");
                     
                 builder.Append("}\n");
             }
@@ -100,11 +187,14 @@ namespace Danmakux
                     var subContainerName = $"{alias}_{chSeq}_b{partIndex}";
                     
                     builder.Append($"let {strokeName}=p{chIndex}_{partIndex}{{parent=\"{subContainerName}\" alpha=1");
+                    //builder.Append($"viewBox=\"{-chGraphic.Width / 2:F1} {-chGraphic.Height / 2:F1} {chGraphic.Width:F0} {chGraphic.Height:F0}\"");
                     if (prop.borderAlpha != null) builder.Append($" borderAlpha={prop.borderAlpha}");
                     if (prop.borderWidth != null) builder.Append($" borderWidth={prop.borderWidth}");
                     if (!string.IsNullOrEmpty(prop.borderColor)) builder.Append($" borderColor={prop.borderColor}");
                     if (!string.IsNullOrEmpty(prop.fillColor)) builder.Append($" fillColor={prop.fillColor}");
                     if (prop.fillAlpha != null) builder.Append($" borderWidth={prop.fillAlpha}");
+                    //if (prop.width != null) builder.Append($" width={prop.width}%");
+                    //if (prop.height != null) builder.Append($" height={prop.height}%");
                     builder.Append("}");
                     builder.Append($"let {subContainerName} = cb{{parent=\"{containerName}\"");
                     //这里的原因是因为scale属性一般是放在第二层，用于缩放本身的内容。如果anchor属性放在第一层可能无法取得预期的效果？
@@ -114,8 +204,9 @@ namespace Danmakux
                     builder.Append($"}}");
                     builder.Append($"let {containerName} = cb{{parent=\"{parent}\"");
                     
-                    if (prop.x != null) builder.Append($",x={prop.x}%");
-                    if (prop.y != null) builder.Append($",y={prop.y}%");
+                    //实际上因为anchor 移动的是文字，定位点依然在右上角，所以这里手动加上50%
+                    if (prop.x != null) builder.Append($",x={prop.x + 50}%");
+                    if (prop.y != null) builder.Append($",y={prop.y + 50}%");
                     if (prop.rotateX != null) builder.Append($",rotateX={prop.rotateX}");
                     if (prop.rotateY != null) builder.Append($",rotateY={prop.rotateY}");
                     if (prop.rotateZ != null) builder.Append($",rotateZ={prop.rotateZ}");
@@ -127,7 +218,7 @@ namespace Danmakux
                     builder.Append("}\n");
                     if (onProcessMotion != null)
                     {
-                        var motion = new MotionHelper(builder, containerName, subContainerName);
+                        var motion = new MotionHelper(builder, containerName, subContainerName, strokeName);
                         onProcessMotion(motion, prop, chSeq, partIndex);
                         motion.ProcessBackupLayer();
                     }

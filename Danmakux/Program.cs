@@ -35,9 +35,6 @@ namespace Danmakux
                 return;
 
             GraphicHelper helper = new GraphicHelper(graphFile);
-            ClipHelper.TestCase(helper);
-            
-            ClipHelper.ClipChar(helper, "踵返し夏は溶け");
             
             helper.Reset();
             int originalX = 0;
@@ -371,6 +368,92 @@ namespace Danmakux
                 
                 
                 File.WriteAllText("text_4.txt", helper.GetResult());
+            }
+
+            {
+                //Start at 48.800
+                helper.Reset();
+                helper.DefParent("s5", null, new TextProperty()
+                {
+                    x = 50,
+                    y = 50,
+                    duration = 0.4f,
+                    scale = 1.0f
+                });
+
+                {
+                    const int charDistance = 50;
+                    const int rotateDiff = 25;
+                    const float strokeOffset = 0.002f;
+                    const float charOffset = 0f;
+                        
+                    TextProperty prop = new TextProperty();
+                    prop.duration = 14;
+                    prop.scale = 1.0f;
+                    prop.fillColor = "0xeeeeee";
+                    prop.alpha = 1.0f;
+                    helper.AddText("残", "s5", "s5", prop, (p, noChar, noStroke) =>
+                    {
+                        p.x = 0;
+                        p.alpha = 1;
+                        p.y = -150;
+                        p.rotateX = 0;
+                        p.rotateY = 0;
+                        p.rotateZ = 0;
+
+                    }, (motion, p, noChar, noStroke) =>
+                    {
+                        motion.Apply(strokeOffset * noStroke);
+
+                        motion.Apply(0.3f, new TextProperty
+                        {
+                            y = 0
+                        }, "cubic-bezier(0,.6,.2,1)");
+                    });
+                }
+                
+                helper.DefParent("s6", null, new TextProperty()
+                {
+                    x = 50,
+                    y = 50,
+                    duration = 0.4f,
+                    scale = 1.0f
+                });
+
+                {
+                    const int charDistance = 50;
+                    const int rotateDiff = 25;
+                    const float strokeOffset = 0.002f;
+                    const float charOffset = 0f;
+                        
+                    TextProperty prop = new TextProperty();
+                    prop.duration = 14;
+                    prop.scale = 1.0f;
+                    prop.fillColor = "0xeeeeee";
+                    prop.alpha = 1.0f;
+                    helper.AddText("残", "s6", "s6", prop, (p, noChar, noStroke) =>
+                    {
+                        p.x = 0;
+                        p.alpha = 1;
+                        p.y = -150;
+                        p.rotateX = 0;
+                        p.rotateY = 0;
+                        p.rotateZ = 0;
+                        p.scale = 1.0f;
+
+                    }, (motion, p, noChar, noStroke) =>
+                    {
+                        motion.Apply(strokeOffset * noStroke);
+
+                        motion.Apply(0.3f, new TextProperty
+                        {
+                            y = 0,
+                            scale = 2.0f
+                        }, "cubic-bezier(0,.6,.2,1)");
+                    });
+                }
+                
+                File.WriteAllText("text_5.txt", helper.GetResult());
             }
         }
 

@@ -11,7 +11,52 @@ namespace Danmakux
 {
     public static class ClipHelper
     {
-        private static Regex svgPattern = new Regex(@"([A-Z])([ \t0-9\.,-]*)");
+        public static Regex svgPattern = new Regex(@"([A-Z])([ \t0-9\.,-]*)");
+
+        public delegate void ElementHandler(string eleType, float currX, float currY, float ctl1X, float ctl1Y, float ctl2X, float ctl2Y);
+        public static void SvgVisitor(string inputSvg, ElementHandler handler)
+        {
+            PathBuilder builder = new PathBuilder();
+            var pointList = svgPattern.Matches(inputSvg);
+            foreach (Match match in pointList)
+            {
+                var pointType = match.Groups[1].Value;
+                var pointArgs = match.Groups[2].Value.Trim().Split(new char[] {' ', ','},
+                    StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                var currX = Single.NaN;
+                var currY = Single.NaN;
+                var ctl1X = Single.NaN;
+                var ctl2X = Single.NaN;
+                var ctl1Y = Single.NaN;
+                var ctl2Y = Single.NaN;
+                if (pointArgs.Length >= 6)
+                {
+                    //C CTLX1 CTLY1 CTLX2 CTLY2 X Y
+                    ctl1X = float.Parse(pointArgs[0]);
+                    ctl1Y = float.Parse(pointArgs[1]);
+                    ctl2X = float.Parse(pointArgs[2]);
+                    ctl2Y = float.Parse(pointArgs[3]);
+                    currX = float.Parse(pointArgs[4]);
+                    currY = float.Parse(pointArgs[5]);
+                }
+                else if (pointArgs.Length >= 4)
+                {
+                    //Q CTLX CTLY X Y
+                    ctl1X = ctl2X = float.Parse(pointArgs[0]);
+                    ctl1Y = ctl2Y = float.Parse(pointArgs[1]);
+                    currX = float.Parse(pointArgs[2]);
+                    currY = float.Parse(pointArgs[3]);
+                }
+                else if (pointArgs.Length >= 2)
+                {
+                    //L AAA BBB
+                    currX = float.Parse(pointArgs[0]);
+                    currY = float.Parse(pointArgs[1]);
+                }
+
+                handler(pointType, currX, currY, ctl1X, ctl1Y, ctl2X, ctl2Y);
+            }
+        }
         
         /// <summary>
         /// 假定input是 X 方向向右， Y 方向向下空间里，大小 1024 x 1024 的一个路径，将 clipPath中的部分裁剪掉。

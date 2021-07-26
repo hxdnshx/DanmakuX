@@ -6,18 +6,64 @@ namespace Danmakux
     {
         private StringBuilder _publicBuilder = null;
         private StringBuilder _backupBuilder = new StringBuilder();
+        private StringBuilder _pathBuilder = null;//new StringBuilder();
         private string _dstContainer = "";
         private string _dstBackup = "";
+        private string _dstPath = "";
         private bool _isFirst = true;
         private bool _allBackupLayerRequired = false;
+        //private bool _pathTransformRequired = false;
 
-        public MotionHelper(StringBuilder builder, string dstContainer, string dstBackup)
+        public MotionHelper(StringBuilder builder, string dstContainer, string dstBackup, string dstPath)
         {
             _publicBuilder = builder;
             _dstContainer = dstContainer;
             _dstBackup = dstBackup;
+            _dstPath = dstPath;
         }
+/*
+        private MotionHelper ApplyPath(float duration, TextProperty prop = null, string motion = "linear")
+        {
+            var builder = _pathBuilder;
+            bool isFirst = _isFirst;
+            if (!_isFirst)
+                builder.Append("then ");
+            _isFirst = false;
+            builder.Append($"set {_dstPath} {{");
+            bool layerRequired = false;
+            for (;;)
+            {
+                if (prop == null) break;
+                if (prop.width != null)
+                {
+                    builder.Append($"width={prop.width}%,");
+                    prop.width = null;
+                    layerRequired = true;
+                }
 
+                if (prop.height != null)
+                {
+                    builder.Append($"height={prop.height}%,");
+                    prop.height = null;
+                    layerRequired = true;
+                }
+                break;
+            }
+
+            builder.Append($"}} {duration}s");
+            if (motion != "linear" && layerRequired)
+            {
+                builder.Append($",\"{motion}\"");
+            }
+            builder.Append($"\n");
+
+            if (layerRequired)
+                _pathTransformRequired = true;
+            
+            return this;
+        }
+        */
+        
         public MotionHelper Apply(float duration,  TextProperty prop = null, string motion = "linear", bool isBackup = false)
         {
             //set b_3_1 {} 0.1s then set b_3_1 {x = 20%, y = 0%, rotateY = 0, alpha = 1} 1s, "ease-out" then set b_3_1{} 2s
@@ -34,14 +80,16 @@ namespace Danmakux
                 if (prop == null) break;
                 if (prop.x != null)
                 {
-                    builder.Append($"x={prop.x}%,");
+                    //加 50 的原因参见 GraphicHelper对应部分
+                    builder.Append($"x={prop.x + 50}%,");
                     prop.x = null;
                     backupLayerRequired = true;
                 }
 
                 if (prop.y != null)
                 {
-                    builder.Append($"y={prop.y}%,");
+                    //加 50 的原因参见 GraphicHelper对应部分
+                    builder.Append($"y={prop.y + 50}%,");
                     prop.y = null;
                     backupLayerRequired = true;
                 }
@@ -108,7 +156,12 @@ namespace Danmakux
                     (prop.rotateX != null || prop.rotateY != null || prop.rotateZ != null || prop.scale != null))
                     _allBackupLayerRequired = true;
                 Apply(duration, prop, motion, true);
+                
+                
+                //_isFirst = isFirst;
+                //ApplyPath(duration, prop, motion);
             }
+            
 
             return this;
         }
@@ -119,6 +172,12 @@ namespace Danmakux
             {
                 _publicBuilder.Append(_backupBuilder.ToString());
             }
+/*
+            if (_pathTransformRequired)
+            {
+                _publicBuilder.Append(_pathBuilder.ToString());
+            }
+            */
         }
     }
 }

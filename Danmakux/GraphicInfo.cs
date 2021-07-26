@@ -10,6 +10,10 @@ namespace Danmakux
         [JsonProperty("strokes")]
         public List<string> Strokes { get; set; }
 
+        public float Width {get; set; }
+        
+        public float Height { get; set; }
+
         public struct Loc
         {
             [JsonProperty("x")]
