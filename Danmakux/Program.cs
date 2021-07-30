@@ -89,25 +89,26 @@ namespace Danmakux
 
                 File.WriteAllText("result_script.txt", helper.GetResult());
             }
-
+            //500
             Intro_Author(helper);
-            {
+            {//15.533 // 16000
                 helper.Reset();
                 helper.DefParent("s1", null, new TextProperty()
                 {
                     x = 10,
                     y = 10,
                     duration = 20,
-                    scale = 0.13f,
+                    scale = 0.18f,
+                    alpha = 0.5f
                 });
                 
                 TextProperty prop = new TextProperty();
                 prop.duration = 10;
                 prop.scale = 0.6f;
-                prop.fillColor = "0xff6666";
+                prop.fillColor = "0x030303";
                 prop.alpha = 0.0f;
 
-                QRCodeHelper.GenQRCode(helper, "踵返し夏は溶け", 3, "　手を引く影　", "s1", "s1", prop, 2.0f);
+                QRCodeHelper.GenQRCode(helper, "踵返し夏は溶け", 3, "　手を引く影　", "s1", "s1", prop, 1.5f);
                 
                 
                 helper.DefParent("z1", null, new TextProperty()
@@ -121,10 +122,10 @@ namespace Danmakux
                 prop.x = 0;
                 prop.y = 0;
                 prop.duration = 11;
-                prop.scale = 1f;
-                prop.fillColor = "0xff6666";
+                prop.scale = 0.6f;
+                prop.fillColor = "0x030303";
                 prop.alpha = 0.0f;
-                Fadein_1.Func2(helper, "踵返し夏は溶け", "z1", "z1", prop, 5.5f, 0.5f);
+                Fadein_1.Func2(helper, "踵返し夏は溶け", "z1", "z1", prop, 4.5f, 0.5f);
                 helper.DefParent("z2", null, new TextProperty()
                 {
                     x = 10,
@@ -137,19 +138,20 @@ namespace Danmakux
                 File.WriteAllText("qr_1.txt", helper.GetResult());
             }
             {
-                
+                //22800
                 helper.Reset();
                 helper.DefParent("s2", null, new TextProperty()
                 {
-                    x = 70,
-                    y = 60,
+                    x = 73,
+                    y = 42,
                     duration = 20,
-                    scale = 0.13f,
+                    scale = 0.15f,
+                    alpha = 0.5f
                 });
                 TextProperty prop = new TextProperty();
                 prop.duration = 12;
                 prop.scale = 0.6f;
-                prop.fillColor = "0xeeeeee";
+                prop.fillColor = "0x030303";
                 prop.alpha = 0.0f;
 
                 QRCodeHelper.GenQRCode(helper, "畦道　日暮れの道", 4.5f, "　優しい笑顔の　", "s2", "s2", prop, 2.5f);
@@ -157,7 +159,7 @@ namespace Danmakux
                 helper.DefParent("z3", null, new TextProperty()
                 {
                     x = 70,
-                    y = 10,
+                    y = 25,
                     duration = 20,
                     scale = 0.5f,
                 });
@@ -179,7 +181,7 @@ namespace Danmakux
                 helper.DefParent("z4", null, new TextProperty()
                 {
                     x = 70,
-                    y = 25,
+                    y = 32,
                     duration = 20,
                     scale = 0.5f,
                 });
@@ -200,7 +202,7 @@ namespace Danmakux
             }
 
             {
-
+                //29500 / 29800(txt)
                 helper.Reset();
                 helper.DefParent("s3", null, new TextProperty()
                 {
@@ -212,7 +214,7 @@ namespace Danmakux
                 TextProperty prop = new TextProperty();
                 prop.duration = 12;
                 prop.scale = 0.6f;
-                prop.fillColor = "0xeeeeee";
+                prop.fillColor = "0x030303";
                 prop.alpha = 0.0f;
 
                 QRCodeHelper.GenQRCode(helper, "夢路は遠く果て", 2.2f, "　遥か唄の底　",1.9f ,"　水に横たう　", "s3", "s3", prop, 1.3f);
@@ -283,19 +285,19 @@ namespace Danmakux
             }
 
             {
-                //Start at 35.700
+                //Start at 35.700 /36000(txt)
                 helper.Reset();
                 helper.DefParent("s4", null, new TextProperty()
                 {
-                    x = 70,
-                    y = 5,
+                    x = 80,
+                    y = 10,
                     duration = 20,
-                    scale = 0.13f,
+                    scale = 0.15f,
                 });
                 TextProperty prop = new TextProperty();
                 prop.duration = 14;
                 prop.scale = 0.6f;
-                prop.fillColor = "0xeeeeee";
+                prop.fillColor = "0x030303";
                 prop.alpha = 0.0f;
 
                 QRCodeHelper.GenQRCode(helper, "手持ち花火が　　　", 3.2f, "今沈んでった　　　",1.9f ,"土へと還るみたいに", "s4", "s4", prop, 3.2f);
@@ -307,7 +309,7 @@ namespace Danmakux
                 
                 helper.DefParent("z8", null, new TextProperty()
                 {
-                    x = 70,
+                    x = 78,
                     y = 60,
                     duration = 20,
                     scale = 0.5f,
@@ -327,7 +329,7 @@ namespace Danmakux
                 
                 helper.DefParent("z9", null, new TextProperty()
                 {
-                    x = 70,
+                    x = 78,
                     y = 67.5f,
                     duration = 20,
                     scale = 0.5f,
@@ -348,7 +350,7 @@ namespace Danmakux
                 
                 helper.DefParent("A1", null, new TextProperty()
                 {
-                    x = 70,
+                    x = 78,
                     y = 75,
                     duration = 20,
                     scale = 0.5f,
@@ -488,6 +490,8 @@ namespace Danmakux
                     const int rotateDiff = 25;
                     const float strokeOffset = 0.002f;
                     const float charOffset = 0f;
+
+                    
                         
                     TextProperty prop = new TextProperty();
                     prop.duration = 14;
@@ -513,14 +517,329 @@ namespace Danmakux
                         {
                             y = 200,
                             alpha = 0
-                        }, "cubic-bezier(0,.3,0,1)");
-                        
+                        }, "cubic-bezier(0,.3,.1,1)");
+
+
                         motion.ForceSetBackup(true);
                     });
                 }
                 
                 File.WriteAllText("text_5.txt", helper.GetResult());
             }
+            {
+                helper.Reset();
+                ImageHelper img = new ImageHelper(@"D:\bg_demo.svg");
+                ImageHelper border = new ImageHelper(@"D:\border.svg");
+                ImageHelper border1 = new ImageHelper(@"D:\part-1-border.svg");
+                ImageHelper border2 = new ImageHelper(@"D:\part-2-border.svg");
+                ImageHelper border3 = new ImageHelper(@"D:\part-3-border.svg");
+                const float part3Time = 30.771f;
+                
+                helper.DefParent("s7", null, new TextProperty()
+                {
+                    x = 50,
+                    y = 50f,
+                    duration = 46.1f,
+                    scale = 1f
+                });
+                
+                helper.DefMotion("s7", motion =>
+                {
+                    motion.Apply(12.8f)
+                        .Apply(1f, new TextProperty {scale = 0.8f}, "cubic-bezier(0,.3,.7,1)")//
+                        .Apply(0.001f, new TextProperty{scale = 1})
+                        .Apply(1f, new TextProperty{scale = 0.8f}, "cubic-bezier(0,.3,.7,1)")
+                            .Apply(0.001f, new TextProperty{scale = 1});
+                });
+                
+                /*
+                 * set s7{} 4.8s
+                    then set s7{scale=0.8} 1s
+                    then set s7{scale=1.0} 0.001s
+                    then set s7{scale=0.8} 1s
+                    需要对父节点做scale才能比较好达到最终的效果
+                    
+                 */
+                
+                var rnd = new Random();
+                
+                TextProperty prop = new TextProperty();
+                prop.duration = 46.1f;
+                prop.x = 0f;
+                prop.scale = 1.2f;
+                prop.alpha = 1.0f;
+                img.AddImage(helper, "s7", prop, motion =>
+                {
+                    
+                    motion.Apply(999.0f, null, isBackup: true);
+                    IntroMotion(motion, rnd, 6);
+                    
+                    motion.Apply(0.001f, new TextProperty()
+                        {x = 330});
+                    //14.8
+                    motion.Apply(2.9f, new TextProperty()
+                    {x = 280 },"cubic-bezier(0,.6,.6,1)");
+                    motion.Apply(2.9001f, new TextProperty()
+                        {}, isBackup: true);
+
+                    //23.0
+                    motion.Apply(23.0f - 17.7f, isBackup: true);
+                    motion.Apply(23.0f - 17.7f, isBackup: false);
+                    
+                    motion.Apply(0.001f, new TextProperty()
+                        {x = -300});
+                    motion.Apply(2.9f, new TextProperty()
+                        {x = -250 },"cubic-bezier(0,.6,.6,1)");
+                    
+                    motion.Apply(0.001f, new TextProperty()
+                        {x = 100}, isBackup: true);
+                    motion.Apply(2.9000f, new TextProperty()
+                        {}, isBackup: true);
+                    
+                    //Part3
+                    motion.Apply(part3Time - 23.0f - 2.9f);
+                    motion.Apply(part3Time - 23.0f - 2.9f, isBackup: true);
+                    
+                    motion.Apply(0.001f, new TextProperty()
+                        {x = -50});
+                    motion.Apply(0.001f, new TextProperty()
+                        {scale = 2.0f});
+                    motion.Apply(2.9f, new TextProperty()
+                        {scale = 1.4f},"cubic-bezier(0,.7,.5,1)");
+                    
+                    motion.Apply(0.001f, new TextProperty()
+                        {x = 130}, isBackup: true);
+                    motion.Apply(2.9001f, isBackup: true);
+                    
+                    
+                    motion.ForceSetBackup(true);
+                });
+                
+                helper.DefParent("bd1", null, new TextProperty()
+                {
+                    x = 53,//53
+                    y = 47.6f,
+                    duration = 46.1f,
+                    zIndex = 2,
+                    scale = 1.2f
+                });
+                border1.AddImage(helper, "bd1", new TextProperty
+                {
+                    duration = 23.0f,
+                    zIndex = 2,
+                    x = 50,
+                    alpha = 0
+                }, motion =>
+                {
+                    motion.Apply(14.8f);//14.8
+                    motion.Apply(0.001f, new TextProperty{alpha = 1});
+                    motion.Apply(2.5f, new TextProperty
+                        {
+                            x = 0
+                        }, "cubic-bezier(0,.6,.6,1)");
+                    motion.Apply(23.0f - 14.8f - 2.5f);
+                    motion.Apply(0.001f, new TextProperty
+                    {alpha = 0});
+                });
+                
+                helper.DefParent("bd2", null, new TextProperty()
+                {
+                    x = 53,//53
+                    y = 47.6f,
+                    duration = 46.1f,
+                    zIndex = 2,
+                    scale = 1.2f
+                });
+                border2.AddImage(helper, "bd2", new TextProperty
+                {
+                    duration = part3Time,
+                    zIndex = 2,
+                    x = -150,
+                    alpha = 0
+                }, motion =>
+                {
+                    motion.Apply(23.0f);//14.8
+                    motion.Apply(0.001f, new TextProperty{alpha = 1});
+                    motion.Apply(2.5f, new TextProperty
+                    {
+                        x = -100
+                    }, "cubic-bezier(0,.6,.6,1)");
+                    motion.Apply(part3Time - 23.0f - 2.5f);
+                    motion.Apply(0.001f, new TextProperty {alpha = 0});
+                });
+                
+                helper.DefParent("bd3", null, new TextProperty()
+                {
+                    x = 53,//53
+                    y = 47.6f,
+                    duration = 46.1f,
+                    zIndex = 2,
+                    scale = 1.2f
+                });
+                //
+                border3.AddImage(helper, "bd3", new TextProperty
+                {
+                    duration = 46.1f,
+                    zIndex = 2,
+                    x = 0,
+                    alpha = 0,
+                    scale = 1.5f
+                }, motion =>
+                {
+                    motion.Apply(part3Time);
+                    motion.Apply(0.001f, new TextProperty{alpha = 1});
+                    motion.Apply(0.001f, new TextProperty{x = -50});
+                    motion.Apply(2.5f, new TextProperty
+                    {
+                        scale = 1
+                    }, "cubic-bezier(0,.4,.7,1)");
+                });
+                
+                helper.DefParent("bd", null, new TextProperty()
+                {
+                    x = 53,
+                    y = 47.6f,
+                    duration = 46.1f,
+                    zIndex = 3,
+                    scale = 1.2f
+                });
+                border.AddImage(helper, "bd", new TextProperty
+                {
+                    duration = 46.1f,
+                    zIndex = 3
+                });
+                
+                File.WriteAllText("img.txt", helper.GetResult());
+            }
+
+            #region Tween01-30384
+
+            
+
+            {
+                helper.Reset();
+                //30.384 - 200ms
+                helper.DefParent("tw1", null, new TextProperty()
+                {
+                    x = 20,//53
+                    y = 30f,
+                    duration = 30.871f - 30.384f + 0.2f,
+                    zIndex = 3,
+                });
+                
+                TextProperty prop = new TextProperty();
+                prop.duration = 46.1f;
+                prop.y = 0f;
+                prop.fillColor = "0xefefef";
+                prop.scale = 0.6f;
+                prop.alpha = 1.0f;
+
+                helper.AddText("█", $"wBG", "tw1", new TextProperty
+                {
+                    scale = 50,
+                    fillColor = "0x020202",
+                }, null, null);
+
+                Fadein_1.Func6(helper, "　　　　　　　　　　　　　　　　Mum", "wA", "tw1", prop, 0.2f, 1f);
+                prop.y = 50f;
+                Fadein_1.Func6(helper, "　　　　　　　　adj", "wB", "tw1", prop, 0.2f, 1f);
+                prop.y = 100f;
+                Fadein_1.Func6(helper, "　　　Not verbalizing　　silent", "wC", "tw1", prop, 0.2f, 1f);
+                prop.y = 150f;
+                Fadein_1.Func6(helper, "　　　　　　　　interj", "wD", "tw1", prop, 0.2f, 1f);
+                prop.y = 200f;
+                Fadein_1.Func6(helper, "　　　Used as a command to stop speaking", "wE", "tw1", prop, 0.2f, 0.5f);
+                prop.y = 500f;
+                
+                File.WriteAllText("tween1.txt", helper.GetResult());
+            }
+            #endregion
+        }
+
+        private static void IntroMotion(MotionHelper motion, Random rnd,int round = 6)
+        {
+            motion.Apply(0.8f, new TextProperty()
+            {
+                x = 0
+            }, "cubic-bezier(0,.6,.1,1)");motion.Apply(0.8f, null, isBackup:true);
+
+            int prevRot = 0;
+            for (int i = 0; i < round; i++)
+            {
+                int nextRot = rnd.Next(-7, 7);
+                motion.Apply(2.0f, new TextProperty()
+                {
+                    rotateZ = nextRot
+                }, "cubic-bezier(.5,0,.5,1)", true);
+                prevRot = nextRot;
+            }
+            motion.Apply(0.001f, new TextProperty()
+                {rotateZ = 0}, isBackup: true);
+            motion.Apply(0.001f, new TextProperty()
+            {
+                y = -200,
+                x = 50
+            }, isBackup: true); //设定旋转中心,需要计算一下隐含的+50
+            motion.Apply(1f, new TextProperty()
+            {
+            }, isBackup: true);
+            motion.Apply(0.001f, new TextProperty()
+            {
+                y = 10,
+                x = 80
+            }, isBackup: true); //设定旋转中心,需要计算一下隐含的+50
+            motion.Apply(1f, new TextProperty()
+            {
+            }, isBackup: true);
+            
+            motion.Apply(0.001f, new TextProperty()
+                {y = 0, x = 0}, isBackup: true);
+            motion.Apply(0.001f, new TextProperty()
+                {rotateZ = 0}, isBackup: true);
+
+
+            for (int i = 0; i < round; i++)
+            {
+                int x = rnd.Next(-5, 5);
+                int y = rnd.Next(-5, 5);
+                motion.Apply(2.0f, new TextProperty()
+                {
+                    x = x,
+                    y = y
+                }, "cubic-bezier(.2,0,.8,1)");
+            }
+
+            motion.Apply(0.001f, new TextProperty
+            {
+                x = 0,
+                y = 0
+            });
+            motion.Apply(0.001f, new TextProperty
+            {
+                scale = 4.0f
+            });
+
+            motion.Apply(0.001f, new TextProperty()
+                {y = 250, x = 0}); //设定旋转中心在屏幕中在的位置
+            motion.Apply(0.001f, new TextProperty()
+            {
+                rotateZ = -30
+            });
+            motion.Apply(1f, new TextProperty()
+                {rotateZ = 0}, "cubic-bezier(.2,0,.8,1)");
+            motion.Apply(0.001f, new TextProperty()
+                {rotateZ = 30});
+            motion.Apply(0.001f, new TextProperty()
+                {y = -150}); //设定旋转中心在屏幕中在的位置
+            motion.Apply(1f, new TextProperty()
+            {
+                rotateZ = 0
+            }, "cubic-bezier(.2,0,.8,1)");
+            
+            motion.Apply(0.001f, new TextProperty()
+                {scale = 1.0f}); //恢复
+            motion.Apply(0.001f, new TextProperty()
+                {y = 0}); //恢复
         }
 
         /*

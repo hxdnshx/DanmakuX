@@ -17,7 +17,7 @@ namespace Danmakux
 
         private static Regex mediansPattern1 = new Regex(@"(.*),""medians"":\[\[\[.*\]\]\](.*)");
 
-        private StringBuilder builder = new StringBuilder();
+        internal StringBuilder Builder = new StringBuilder();
         private List<char> preparedTxt = new List<char>();
 
         private static (float, float) GetBoundingBoxOffset(GraphicInfo info)
@@ -119,34 +119,34 @@ namespace Danmakux
 
         public void Reset()
         {
-            builder.Clear();
+            Builder.Clear();
             preparedTxt.Clear();
-            builder.Append(prev_template);
+            Builder.Append(prev_template);
         }
 
         public void DefParent(string alias, string parent, TextProperty prop)
         {
-            builder.Append($"def text {alias} {{");
-            builder.Append($"content=\"　\" ");
-            builder.Append($"anchorX=.5 ");
-            builder.Append($"anchorY=.5 ");
-            builder.Append($"fontSize=10% ");
-            if (!string.IsNullOrEmpty(parent)) builder.Append($"parent=\"{parent}\" ");
+            Builder.Append($"def text {alias} {{");
+            Builder.Append($"content=\"　\" ");
+            Builder.Append($"anchorX=.5 ");
+            Builder.Append($"anchorY=.5 ");
+            Builder.Append($"fontSize=10% ");
+            if (!string.IsNullOrEmpty(parent)) Builder.Append($"parent=\"{parent}\" ");
             if (prop != null)
             {
-                if (prop.x != null) builder.Append($",x={prop.x}%");
-                if (prop.y != null) builder.Append($",y={prop.y}%");
-                if (prop.rotateX != null) builder.Append($",rotateX={prop.rotateX}");
-                if (prop.rotateY != null) builder.Append($",rotateY={prop.rotateY}");
-                if (prop.rotateZ != null) builder.Append($",rotateZ={prop.rotateZ}");
-                if (prop.scale != null) builder.Append($",scale={prop.scale}");
-                if (prop.zIndex != null) builder.Append($",zIndex={prop.zIndex}");
-                if (prop.duration != null) builder.Append($",duration={prop.duration}s");
-                if (prop.alpha != null) builder.Append($",alpha={prop.alpha}");
-                if (prop.anchorX != null) builder.Append($",anchorX={prop.anchorX}");
-                if (prop.anchorY != null) builder.Append($",anchorY={prop.anchorY}");
+                if (prop.x != null) Builder.Append($",x={prop.x}%");
+                if (prop.y != null) Builder.Append($",y={prop.y}%");
+                if (prop.rotateX != null) Builder.Append($",rotateX={prop.rotateX}");
+                if (prop.rotateY != null) Builder.Append($",rotateY={prop.rotateY}");
+                if (prop.rotateZ != null) Builder.Append($",rotateZ={prop.rotateZ}");
+                if (prop.scale != null) Builder.Append($",scale={prop.scale}");
+                if (prop.zIndex != null) Builder.Append($",zIndex={prop.zIndex}");
+                if (prop.duration != null) Builder.Append($",duration={prop.duration}s");
+                if (prop.alpha != null) Builder.Append($",alpha={prop.alpha}");
+                if (prop.anchorX != null) Builder.Append($",anchorX={prop.anchorX}");
+                if (prop.anchorY != null) Builder.Append($",anchorY={prop.anchorY}");
                     
-                builder.Append("}\n");
+                Builder.Append("}\n");
             }
         }
 
@@ -170,7 +170,7 @@ namespace Danmakux
                         chIndex = preparedTxt.Count;
                         preparedTxt.Add(ch);
                         for (int partIndex = 0; partIndex < chGraphic.Strokes.Count; partIndex++)
-                            builder.Append($"let p{chIndex}_{partIndex}=pb{{d=\"{chGraphic.Strokes[partIndex]}\",alpha=0}}\n");
+                            Builder.Append($"let p{chIndex}_{partIndex}=pb{{d=\"{chGraphic.Strokes[partIndex]}\",alpha=0}}\n");
                         //TODO：对应每一个笔画计算中点，使其支持XY轴旋转。
                     }
                     else
@@ -186,39 +186,39 @@ namespace Danmakux
                     var containerName = $"{alias}_{chSeq}_t{partIndex}";
                     var subContainerName = $"{alias}_{chSeq}_b{partIndex}";
                     
-                    builder.Append($"let {strokeName}=p{chIndex}_{partIndex}{{parent=\"{subContainerName}\" alpha=1");
+                    Builder.Append($"let {strokeName}=p{chIndex}_{partIndex}{{parent=\"{subContainerName}\" alpha=1");
                     //builder.Append($"viewBox=\"{-chGraphic.Width / 2:F1} {-chGraphic.Height / 2:F1} {chGraphic.Width:F0} {chGraphic.Height:F0}\"");
-                    if (prop.borderAlpha != null) builder.Append($" borderAlpha={prop.borderAlpha}");
-                    if (prop.borderWidth != null) builder.Append($" borderWidth={prop.borderWidth}");
-                    if (!string.IsNullOrEmpty(prop.borderColor)) builder.Append($" borderColor={prop.borderColor}");
-                    if (!string.IsNullOrEmpty(prop.fillColor)) builder.Append($" fillColor={prop.fillColor}");
-                    if (prop.fillAlpha != null) builder.Append($" borderWidth={prop.fillAlpha}");
+                    if (prop.borderAlpha != null) Builder.Append($" borderAlpha={prop.borderAlpha}");
+                    if (prop.borderWidth != null) Builder.Append($" borderWidth={prop.borderWidth}");
+                    if (!string.IsNullOrEmpty(prop.borderColor)) Builder.Append($" borderColor={prop.borderColor}");
+                    if (!string.IsNullOrEmpty(prop.fillColor)) Builder.Append($" fillColor={prop.fillColor}");
+                    if (prop.fillAlpha != null) Builder.Append($" borderWidth={prop.fillAlpha}");
                     //if (prop.width != null) builder.Append($" width={prop.width}%");
                     //if (prop.height != null) builder.Append($" height={prop.height}%");
-                    builder.Append("}");
-                    builder.Append($"let {subContainerName} = cb{{parent=\"{containerName}\"");
+                    Builder.Append("}");
+                    Builder.Append($"let {subContainerName} = cb{{parent=\"{containerName}\"");
                     //这里的原因是因为scale属性一般是放在第二层，用于缩放本身的内容。如果anchor属性放在第一层可能无法取得预期的效果？
                     //感觉大概率会导致单个笔画的位置出错，先试试吧
-                    if (prop.anchorX != null) builder.Append($",anchorX={prop.anchorX}");
-                    if (prop.anchorY != null) builder.Append($",anchorY={prop.anchorY}");
-                    builder.Append($"}}");
-                    builder.Append($"let {containerName} = cb{{parent=\"{parent}\"");
+                    if (prop.anchorX != null) Builder.Append($",anchorX={prop.anchorX}");
+                    if (prop.anchorY != null) Builder.Append($",anchorY={prop.anchorY}");
+                    Builder.Append($"}}");
+                    Builder.Append($"let {containerName} = cb{{parent=\"{parent}\"");
                     
                     //实际上因为anchor 移动的是文字，定位点依然在右上角，所以这里手动加上50%
-                    if (prop.x != null) builder.Append($",x={prop.x + 50}%");
-                    if (prop.y != null) builder.Append($",y={prop.y + 50}%");
-                    if (prop.rotateX != null) builder.Append($",rotateX={prop.rotateX}");
-                    if (prop.rotateY != null) builder.Append($",rotateY={prop.rotateY}");
-                    if (prop.rotateZ != null) builder.Append($",rotateZ={prop.rotateZ}");
-                    if (prop.scale != null) builder.Append($",scale={prop.scale}");
-                    if (prop.zIndex != null) builder.Append($",zIndex={prop.zIndex}");
-                    if (prop.duration != null) builder.Append($",duration={prop.duration}s");
-                    if (prop.alpha != null) builder.Append($",alpha={prop.alpha}");
+                    if (prop.x != null) Builder.Append($",x={prop.x + 50}%");
+                    if (prop.y != null) Builder.Append($",y={prop.y + 50}%");
+                    if (prop.rotateX != null) Builder.Append($",rotateX={prop.rotateX}");
+                    if (prop.rotateY != null) Builder.Append($",rotateY={prop.rotateY}");
+                    if (prop.rotateZ != null) Builder.Append($",rotateZ={prop.rotateZ}");
+                    if (prop.scale != null) Builder.Append($",scale={prop.scale}");
+                    if (prop.zIndex != null) Builder.Append($",zIndex={prop.zIndex}");
+                    if (prop.duration != null) Builder.Append($",duration={prop.duration}s");
+                    if (prop.alpha != null) Builder.Append($",alpha={prop.alpha}");
                     
-                    builder.Append("}\n");
+                    Builder.Append("}\n");
                     if (onProcessMotion != null)
                     {
-                        var motion = new MotionHelper(builder, containerName, subContainerName, strokeName);
+                        var motion = new MotionHelper(Builder, containerName, subContainerName, strokeName);
                         onProcessMotion(motion, prop, chSeq, partIndex);
                         motion.ProcessBackupLayer();
                     }
@@ -231,9 +231,16 @@ namespace Danmakux
             }
         }
 
+        public void DefMotion(string dst, Action<MotionHelper> onProcessMotion)
+        {
+            var motion = new MotionHelper(Builder, dst, null, null);
+            onProcessMotion?.Invoke(motion);
+            motion.ProcessBackupLayer();
+        }
+
         public string GetResult()
         {
-            return builder.ToString();
+            return Builder.ToString();
         }
     }
 }

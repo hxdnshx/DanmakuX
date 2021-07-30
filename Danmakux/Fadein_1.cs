@@ -205,6 +205,29 @@ namespace Danmakux
                         }, "cubic-bezier(0,.6,.4,1)");
             });
         }
+        
+        //说明：横向向右弹出。
+        public static void Func6(GraphicHelper helper, string str,string alias, string parent, TextProperty prop, 
+            float delay, float duration)
+        {
+            const int charDistance = 20;
+            const float strokeOffset = 0.002f;
+            const float charOffset = 0.006f;
+            helper.AddText(str, alias, parent, prop, (p, noChar, noStroke) =>
+            {
+                p.x = 0;
+                p.alpha = 0;
+            }, (motion, p, noChar, noStroke) =>
+            {
+                var offset = strokeOffset * noStroke  + charOffset * noChar ;
+                motion.Apply(delay);
+                motion.Apply(0.001f, new TextProperty {alpha = 1});
+                motion.Apply(duration + offset, new TextProperty()
+                {
+                    x = charDistance * noChar
+                },"cubic-bezier(0,.8,.2,1)");
+            });
+        }
 
         static void Func3()
         {

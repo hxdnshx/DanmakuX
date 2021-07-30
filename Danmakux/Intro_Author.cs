@@ -12,8 +12,8 @@ namespace Danmakux
             {
                 helper.DefParent("i0", null, new TextProperty()
                 {
-                    x = 85,
-                    y = 60,
+                    x = 78,
+                    y = 40,
                     duration = 20,
                     scale = 1.5f
                 });
@@ -21,7 +21,7 @@ namespace Danmakux
                 TextProperty prop = new TextProperty();
                 prop.duration = 15f;
                 prop.scale = 0.6f;
-                prop.fillColor = "0xffffff";
+                prop.fillColor = "0x030303";
                 prop.alpha = 0.0f;
                 prop.rotateX = 0;
                 prop.rotateY = 0;
@@ -67,8 +67,8 @@ namespace Danmakux
             {
                 helper.DefParent("i1", null, new TextProperty()
                 {
-                    x = 71.5f,
-                    y = 62,
+                    x = 74.5f,
+                    y = 50,
                     duration = 13,
                     scale = 0.3f
                 });
@@ -76,7 +76,7 @@ namespace Danmakux
                 TextProperty prop = new TextProperty();
                 prop.duration = 15f;
                 prop.scale = 0.6f;
-                prop.fillColor = "0xffffff";
+                prop.fillColor = "0x030303";
                 prop.alpha = 0.0f;
                 prop.rotateX = 0;
                 prop.rotateY = 0;
@@ -149,8 +149,8 @@ namespace Danmakux
             {
                 helper.DefParent("i2", null, new TextProperty()
                 {
-                    x = 70.5f,
-                    y = 69,
+                    x = 73.5f,
+                    y = 55,
                     duration = 13,
                     scale = 0.3f
                 });
@@ -158,7 +158,7 @@ namespace Danmakux
                 TextProperty prop = new TextProperty();
                 prop.duration = 15f;
                 prop.scale = 0.6f;
-                prop.fillColor = "0xffffff";
+                prop.fillColor = "0x030303";
                 prop.alpha = 0.0f;
                 prop.rotateX = 0;
                 prop.rotateY = 0;
@@ -222,8 +222,8 @@ namespace Danmakux
             {
                 helper.DefParent("i3", null, new TextProperty()
                 {
-                    x = 64f,
-                    y = 76,
+                    x = 67f,
+                    y = 60,
                     duration = 13,
                     scale = 0.3f
                 });
@@ -231,7 +231,7 @@ namespace Danmakux
                 TextProperty prop = new TextProperty();
                 prop.duration = 15f;
                 prop.scale = 0.6f;
-                prop.fillColor = "0xffffff";
+                prop.fillColor = "0x030303";
                 prop.alpha = 0.0f;
                 prop.rotateX = 0;
                 prop.rotateY = 0;
@@ -296,8 +296,8 @@ namespace Danmakux
             {
                 helper.DefParent("i4", null, new TextProperty()
                 {
-                    x = 71.5f,
-                    y = 83,
+                    x = 74.5f,
+                    y = 65,
                     duration = 13,
                     scale = 0.3f
                 });
@@ -305,7 +305,7 @@ namespace Danmakux
                 TextProperty prop = new TextProperty();
                 prop.duration = 15f;
                 prop.scale = 0.6f;
-                prop.fillColor = "0xffffff";
+                prop.fillColor = "0x030303";
                 prop.alpha = 0.0f;
                 prop.rotateX = 0;
                 prop.rotateY = 0;
@@ -368,8 +368,8 @@ namespace Danmakux
             {
                 helper.DefParent("i5", null, new TextProperty()
                 {
-                    x = 65f,
-                    y = 90,
+                    x = 68f,
+                    y = 70,
                     duration = 13,
                     scale = 0.3f
                 });
@@ -377,7 +377,7 @@ namespace Danmakux
                 TextProperty prop = new TextProperty();
                 prop.duration = 15f;
                 prop.scale = 0.6f;
-                prop.fillColor = "0xffffff";
+                prop.fillColor = "0x030303";
                 prop.alpha = 0.0f;
                 prop.rotateX = 0;
                 prop.rotateY = 0;

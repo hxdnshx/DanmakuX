@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace Danmakux
 {
@@ -11,7 +12,10 @@ namespace Danmakux
         private string _dstBackup = "";
         private string _dstPath = "";
         private bool _isFirst = true;
+        private bool _isBackupFirst = true;
         private bool _allBackupLayerRequired = false;
+
+        private bool _isBackupManual = false;
         //private bool _pathTransformRequired = false;
 
         public MotionHelper(StringBuilder builder, string dstContainer, string dstBackup, string dstPath)
@@ -68,11 +72,20 @@ namespace Danmakux
         {
             //set b_3_1 {} 0.1s then set b_3_1 {x = 20%, y = 0%, rotateY = 0, alpha = 1} 1s, "ease-out" then set b_3_1{} 2s
             //then set b_3_1 {x = 20%, y = 150%, rotateY = 30, alpha = 0} 2s, "ease-in"
+            if (Math.Abs(duration - 999) < 0.1 && isBackup)
+            {
+                _isBackupManual = true;
+                return this;
+            }
+
             var builder = isBackup ? _backupBuilder : _publicBuilder;
-            bool isFirst = _isFirst;
-            if (!_isFirst)
+            bool isFirst = isBackup ? _isBackupFirst : _isFirst;
+            if (!isFirst)
                 builder.Append("then ");
-            _isFirst = false;
+            if (isBackup)
+                _isBackupFirst = false;
+            else
+                _isFirst = false;
             builder.Append($"set {(isBackup ? _dstBackup : _dstContainer)} {{");
             bool backupLayerRequired = false;
             for (;;)
@@ -149,9 +162,8 @@ namespace Danmakux
             }
             builder.Append($"\n");
 
-            if (!isBackup)
+            if (!isBackup && !_isBackupManual)
             {
-                _isFirst = isFirst;
                 if (prop!= null && 
                     (prop.rotateX != null || prop.rotateY != null || prop.rotateZ != null || prop.scale != null))
                     _allBackupLayerRequired = true;
@@ -175,6 +187,8 @@ namespace Danmakux
         {
             if (_allBackupLayerRequired)
             {
+                if (string.IsNullOrEmpty(_dstBackup))
+                    throw new Exception();
                 _publicBuilder.Append(_backupBuilder.ToString());
             }
 /*
