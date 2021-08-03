@@ -228,6 +228,273 @@ namespace Danmakux
                 },"cubic-bezier(0,.8,.2,1)");
             });
         }
+        
+        //说明：根据包围盒进行检测，如果是长方形则从对应的横向/纵向进入。
+        //TODO: 带时间轴
+        public static void Func7(GraphicHelper helper, string str,string alias, string parent, TextProperty prop, 
+            float direction, float effect, float duration, List<float> timeline)
+        {
+            int charDistance = (int)(100f * prop.scale??1.0);
+            const float strokeOffset = 0.04f;
+            const float charOffset = 0.1f;
+            helper.AddText(str, alias, parent, prop, (p, noChar, noStroke) =>
+            {
+                p.x = 0;
+                p.alpha = 0;
+            }, (motion, p, noChar, noStroke, ctx) =>
+            {
+                var graphic = ctx.Info;
+                var (width, height) = GraphicHelper.GetRealBoundingBox(graphic);
+                width++;
+                height++;
+                var ratio = width / height;
+                var offset = strokeOffset * noStroke  + timeline[noChar] ;
+                var dstX = (float)(noChar * charDistance * Math.Cos(direction));
+                var dstY = (float)(noChar * charDistance * Math.Sin(direction));
+                var index = ((noChar * 5 + noStroke) % 2) * 2 - 1;
+                
+                motion.Apply(offset);
+                motion.Apply(0.001f, new TextProperty {alpha = 1});
+                if (ratio < 0.5) //竖线
+                {
+                    motion.Apply(0.001f, new TextProperty {y=index * 1000 + dstY, x = dstX});
+                    motion.Apply(effect * 0.15f, new TextProperty()
+                    {
+                        y = index * 100 + dstY 
+                    });
+                    motion.Apply(effect * 0.85f, new TextProperty()
+                    {
+                        y = dstY
+                    },"cubic-bezier(0,1,0,1)");
+                }
+                else if (ratio < 1.5) //一般
+                {
+                    motion.Apply(0.001f, new TextProperty {y=dstY, x = dstX});
+                    motion.Apply(0.001f, new TextProperty {scale = 0,rotateZ = 720});
+                    motion.Apply(effect, new TextProperty()
+                    {
+                        scale = prop.scale,
+                        rotateZ = 0
+                    },"cubic-bezier(0,1,0,1)");
+                }
+                else
+                {//横线
+                    motion.Apply(0.001f, new TextProperty {y=dstY, x = index * 1000 + dstX});
+                    motion.Apply(effect * 0.15f, new TextProperty()
+                    {
+                        x = index * 100 + dstX
+                    });
+                    motion.Apply(effect * 0.85f, new TextProperty()
+                    {
+                        x = dstX
+                    },"cubic-bezier(0,1,0,1)");
+                }
+                motion.Apply(duration - offset);
+                motion.Apply(0.001f, new TextProperty {alpha = 0});
+            });
+        }
+        
+        //说明：横向向右弹出。带时间轴
+        public static void Func8(GraphicHelper helper, string str,string alias, string parent, TextProperty prop, 
+            float effect, float duration, List<float> timeline)
+        {
+            const int charDistance = 30;
+            const float strokeOffset = 0.04f;
+            const float charOffset = 0f;
+            helper.AddText(str, alias, parent, prop, (p, noChar, noStroke) =>
+            {
+                p.x = 0;
+                p.alpha = 0;
+            }, (motion, p, noChar, noStroke) =>
+            {
+                var offset = strokeOffset * noStroke ;
+                motion.Apply(timeline[noChar] + offset);
+                motion.Apply(0.001f, new TextProperty {alpha = 1});
+                motion.Apply(effect + offset, new TextProperty()
+                {
+                    x = charDistance * noChar
+                },"cubic-bezier(0,.8,.2,1)");
+                motion.Apply(duration);
+            });
+        }
+
+        public static void RandomMove(MotionHelper motion, Random rnd, float duration, float dstX, float dstY,
+            float distanceX = 1f, float distanceY = 200f, bool isBackup = false)
+        {
+            for (;;)
+            {
+                if (duration <= 0)
+                    break;
+                float current = 1.0f;
+                if (duration < 2.0f)
+                {
+                    distanceX = 0;
+                    distanceY = 0;
+                    current = duration;
+                }
+
+                float angle = (float) ((rnd.NextDouble() - 0.5f) * Math.PI);
+                motion.Apply(current, new TextProperty
+                {
+                    x = dstX + distanceX * (float)Math.Cos(angle),
+                    y = dstY + distanceY * (float)Math.Sin(angle),
+                }, "cubic-bezier(.5,0,.5,1)", isBackup: isBackup);
+                duration -= current;
+            }
+        }
+        
+        public static void RandomRot(MotionHelper motion, Random rnd, float duration, float dstRot,
+             float distance = 3, bool isBackup = false)
+        {
+            for (;;)
+            {
+                if (duration <= 0)
+                    break;
+                float current = 0.75f;
+                if (duration < 1.5f)
+                {
+                    distance = 0;
+                    current = duration;
+                }
+
+                float value = (float)((rnd.NextDouble() - 0.5f) * distance);
+                motion.Apply(current, new TextProperty
+                {
+                    rotateZ = (dstRot + value)
+                }, "cubic-bezier(.5,0,.5,1)", isBackup: isBackup);
+                duration -= current;
+            }
+        }
+        
+        
+        //说明：横向向左弹出。带时间轴
+        public static void Func9(GraphicHelper helper, string str,string alias, string parent, TextProperty prop, 
+            float effect, float duration, List<float> timeline)
+        {
+            const int charDistance = -30;
+            const float strokeOffset = 0.04f;
+            const float charOffset = 0f;
+            helper.AddText(str, alias, parent, prop, (p, noChar, noStroke) =>
+            {
+                p.x = 0;
+                p.alpha = 0;
+            }, (motion, p, noChar, noStroke) =>
+            {
+                var offset = strokeOffset * noStroke ;
+                motion.Apply(timeline[noChar] + offset);
+                motion.Apply(0.001f, new TextProperty {alpha = 1});
+                motion.Apply(effect + offset, new TextProperty()
+                {
+                    x = charDistance * noChar
+                },"cubic-bezier(0,.8,.2,1)");
+                motion.Apply(duration);
+            });
+        }
+        
+        //说明：横向笔划闪现。带时间轴
+        public static void Func10(GraphicHelper helper, string str,string alias, string parent, TextProperty prop, 
+            float effect, List<float> timeline)
+        {
+            const int charDistance = 90;
+            const int strokeDistance = 30;
+            const float strokeOffset = 0.02f;
+            const float charOffset = 0f;
+            helper.AddText(str, alias, parent, prop, (p, noChar, noStroke) =>
+            {
+                p.x = charDistance * noChar + strokeDistance * noStroke;
+                p.alpha = 0;
+            }, (motion, p, noChar, noStroke) =>
+            {
+                var offset = strokeOffset * noStroke ;
+                motion.Apply(timeline[noChar] + offset);
+                motion.Apply(0.001f, new TextProperty {alpha = 1});
+                motion.Apply(effect, new TextProperty()
+                {
+                    x = 30 + charDistance * noChar + strokeDistance * noStroke
+                },"cubic-bezier(0,.8,.2,1)");   
+                motion.Apply(0.001f, new TextProperty {alpha = 0});
+            });
+        }
+        
+        
+        //说明：根据包围盒进行检测，如果是长方形则从对应的横向/纵向进入。
+        //带字体大小分别设定，和行距处理的版本
+        public static void Func11(GraphicHelper helper, string str,string alias, string parent, TextProperty prop, 
+            float direction, float effect, float duration, List<float> timeline, List<float> fontSize)
+        {
+            const int lineSpacing = 25;
+            int charLocation = 0;//(int)(lineSpacing + 100f * prop.scale??1.0);
+            const float strokeOffset = 0.03f;
+            const float charOffset = 0.1f;
+            helper.AddText(str, alias, parent, prop, (p, noChar, noStroke) =>
+            {
+                p.alpha = 0;
+                p.scale = fontSize[noChar];
+                if (noChar > 0 && noStroke == 0)
+                {
+                    charLocation += (int) (lineSpacing + 0.5f * 50f * fontSize[noChar - 1] 
+                                                       + 50f * fontSize[noChar]);
+                }
+            }, (motion, p, noChar, noStroke, ctx) =>
+            {
+                var graphic = ctx.Info;
+                var (width, height) = GraphicHelper.GetRealBoundingBox(graphic);
+                width++;
+                height++;
+                var ratio = width / height;
+                var offset = strokeOffset * noStroke  + timeline[noChar] ;
+                var dstX = (float)(charLocation * Math.Cos(direction));
+                var dstY = (float)(charLocation * Math.Sin(direction));
+                var index = ((noChar * 5 + noStroke) % 2) * 2 - 1;
+                
+                motion.Apply(offset);
+                motion.Apply(0.001f, new TextProperty {alpha = 1});
+                if (ratio < 0.5) //竖线
+                {
+                    motion.Apply(0.001f, new TextProperty {y=index * 1000 + dstY, x = dstX});
+                    motion.Apply(effect * 0.15f, new TextProperty()
+                    {
+                        y = index * 100 + dstY 
+                    });
+                    motion.Apply(effect * 0.85f, new TextProperty()
+                    {
+                        y = dstY
+                    },"cubic-bezier(0,1,0,1)");
+                }
+                else if (ratio < 1.5) //一般
+                {
+                    motion.Apply(0.001f, new TextProperty {y=dstY, x = dstX});
+                    motion.Apply(0.001f, new TextProperty {scale = 0,rotateZ = 720});
+                    motion.Apply(effect, new TextProperty()
+                    {
+                        scale = prop.scale,
+                        rotateZ = 0
+                    },"cubic-bezier(0,1,0,1)");
+                }
+                else
+                {//横线
+                    motion.Apply(0.001f, new TextProperty {y=dstY, x = index * 1000 + dstX});
+                    motion.Apply(effect * 0.15f, new TextProperty()
+                    {
+                        x = index * 100 + dstX
+                    });
+                    motion.Apply(effect * 0.85f, new TextProperty()
+                    {
+                        x = dstX
+                    },"cubic-bezier(0,1,0,1)");
+                }
+                motion.Apply(duration - offset - 0.100f);
+                motion.Apply(0.001f, new TextProperty {alpha = 0});
+                motion.Apply(0.02f, new TextProperty {alpha = 1});
+                motion.Apply(0.02f, new TextProperty {alpha = 0});
+                motion.Apply(0.02f, new TextProperty {alpha = 1});
+                motion.Apply(0.02f, new TextProperty {alpha = 0});
+                motion.Apply(0.02f, new TextProperty {alpha = .5f});
+                motion.Apply(0.02f, new TextProperty {alpha = 0});
+                motion.Apply(0.02f, new TextProperty {alpha = .5f});
+                motion.Apply(0.02f, new TextProperty {alpha = 0});
+            });
+        }
 
         static void Func3()
         {

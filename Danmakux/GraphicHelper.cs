@@ -37,7 +37,11 @@ namespace Danmakux
             info.Width = xMax - xMin;
             info.Height = yMax - yMin;
             return ((xMax + xMin) / 2, (yMax + yMin) / 2);
-            /*
+            
+        }
+
+        public static (float, float) GetRealBoundingBox(GraphicInfo info)
+        {
             float xMax = Single.MinValue;
             float xMin = Single.MaxValue;
             float yMax = Single.MinValue;
@@ -52,11 +56,8 @@ namespace Danmakux
                     if (y < yMin) yMin = y;
                 });
             }
-
-            info.Width = xMax - xMin;
-            info.Height = yMax - yMin;
+            
             return ((xMax + xMin) / 2, (yMax + yMin) / 2);
-            */
         }
 
         private static void MoveToCenter(GraphicInfo info)
@@ -150,14 +151,90 @@ namespace Danmakux
             }
         }
 
-        public void AddText(string txt, string alias, string parent, TextProperty prop, 
+        public const string ScreenTxt = @"　　　　　　　　　　　　　　　　\n　\n　\n　\n　\n　\n　\n　\n　";
+        public void DefScreenParent(string alias, string parent, TextProperty prop, 
+            Action<MotionHelper> onProcessMotion = null, string txt = ScreenTxt)
+        {
+            string subAlias = $"{alias}X";
+            
+            
+            Builder.Append($"def text {subAlias} {{");//?.Replace("　","█")
+            Builder.Append($"content=\"{txt??"　"}\" ");
+            //不需要anchor
+            //Builder.Append($"anchorX=.5 ");
+            //Builder.Append($"anchorY=.5 ");
+            Builder.Append($"fontSize={100f/16f}% ");
+            if (!string.IsNullOrEmpty(parent)) Builder.Append($"parent=\"{parent}\" ");
+            
+            if (prop != null)
+            {
+                if (prop.x != null) Builder.Append($",x={prop.x}%");
+                if (prop.y != null) Builder.Append($",y={prop.y}%");
+                if (prop.rotateX != null) Builder.Append($",rotateX={prop.rotateX}");
+                if (prop.rotateY != null) Builder.Append($",rotateY={prop.rotateY}");
+                if (prop.rotateZ != null) Builder.Append($",rotateZ={prop.rotateZ}");
+                if (prop.scale != null) Builder.Append($",scale={prop.scale}%");
+                if (prop.zIndex != null) Builder.Append($",zIndex={prop.zIndex}");
+                if (prop.duration != null) Builder.Append($",duration={prop.duration}s");
+                if (prop.alpha != null) Builder.Append($",alpha={prop.alpha}");
+                if (prop.anchorX != null) Builder.Append($",anchorX={prop.anchorX}");
+                if (prop.anchorY != null) Builder.Append($",anchorY={prop.anchorY}");
+                    
+                Builder.Append("}\n");
+            }
+            
+            Builder.Append($"def text {alias} {{");
+            Builder.Append($"content=\"{txt??"　"}\" ");
+            //不需要anchor
+            //Builder.Append($"anchorX=.5 ");
+            //Builder.Append($"anchorY=.5 ");
+            Builder.Append($"fontSize={100f/16f}% ");
+            Builder.Append($",x=0%");
+            Builder.Append($",y=0%,");
+            if (prop.duration != null) Builder.Append($"duration={prop.duration}s,");
+            Builder.Append($"parent=\"{subAlias}\" ");
+            
+            Builder.Append("}\n");
+            
+            
+
+            if (onProcessMotion != null)
+            {
+                
+                var motion = new MotionHelper(Builder, subAlias, alias, null);
+                onProcessMotion?.Invoke(motion);
+                motion.ProcessBackupLayer();
+            }
+        }
+
+        public class StrokeContext
+        {
+            public GraphicInfo Info { get; set; }
+        }
+
+        public void Comment(string txt)
+        {
+            Builder.Append("//");
+            Builder.Append(txt);
+            Builder.Append("\n");
+        }
+
+        public void AddText(string txt, string alias, string parent, TextProperty prop,
             Action<TextProperty, int, int> onNextPart = null,
             Action<MotionHelper, TextProperty, int, int> onProcessMotion = null)
+        {
+            AddText(txt, alias, parent, prop, onNextPart,
+                ((helper, property, arg3, arg4, arg5) => onProcessMotion?.Invoke(helper, property, arg3, arg4)));
+        }
+        public void AddText(string txt, string alias, string parent, TextProperty prop, 
+            Action<TextProperty, int, int> onNextPart,
+            Action<MotionHelper, TextProperty, int, int, StrokeContext> onProcessMotion)
         {
             if (txt.Length == 0)
                 return;
             bool isFirst = true;
             int chSeq = -1;
+            StrokeContext ctx = new StrokeContext();
             foreach (var ch in txt)
             {
                 chSeq++;
@@ -219,7 +296,8 @@ namespace Danmakux
                     if (onProcessMotion != null)
                     {
                         var motion = new MotionHelper(Builder, containerName, subContainerName, strokeName);
-                        onProcessMotion(motion, prop, chSeq, partIndex);
+                        ctx.Info = chGraphic;
+                        onProcessMotion(motion, prop, chSeq, partIndex, ctx);
                         motion.ProcessBackupLayer();
                     }
                 }

@@ -30,17 +30,17 @@ namespace Danmakux
                         break;
                     case "M":
                     case "L":
-                        strBuilder.Append($"{x:F2} {y:F2}");
+                        strBuilder.Append($"{x:F0} {y:F0}");
                         break;
                     case "Q":
                         //c1 == c2
-                        strBuilder.Append($" {c1X:F2} {c1Y:F2}");
-                        strBuilder.Append($" {x:F2} {y:F2}");
+                        strBuilder.Append($" {c1X:F0} {c1Y:F0}");
+                        strBuilder.Append($" {x:F0} {y:F0}");
                         break;
                     case "C":
-                        strBuilder.Append($" {c1X:F2} {c1Y:F2}");
-                        strBuilder.Append($" {c2X:F2} {c2Y:F2}");
-                        strBuilder.Append($" {x:F2} {y:F2}");
+                        strBuilder.Append($" {c1X:F0} {c1Y:F0}");
+                        strBuilder.Append($" {c2X:F0} {c2Y:F0}");
+                        strBuilder.Append($" {x:F0} {y:F0}");
                         break;
                     default:
                         throw new InvalidDataException();
@@ -75,9 +75,9 @@ namespace Danmakux
         }
 
         public void AddImage(GraphicHelper helper, string parent, TextProperty prop,
-            Action<MotionHelper> onProcessMotion = null)
+            Action<MotionHelper> onProcessMotion = null, string xalias = null, bool fixBorder = false, int width = 100)
         {
-            var alias = parent;
+            var alias = xalias??parent;
             var builder = helper.Builder;
             var containerName = $"{alias}_i";
             var subContainerName = $"{alias}_iX";
@@ -111,13 +111,15 @@ namespace Danmakux
             }
 
             builder.Append(
-                $"def path {alias}_b {{width=100% x={-Width / 2 + 50:F1}% y={-Height / 2 + 50:F1}% viewBox=\"{-Width / 2:F1} {-Height / 2:F1} {Width:F1} {Height:F1}\" fillAlpha = 1 duration=999s}}\n");
+                $"def path {alias}b {{width={width}% x={-Width / 2 * (width * 0.01) + 50:F1}% y={-Height / 2 * (width * 0.01) + 50:F1}% viewBox=\"{-Width / 2:F1} {-Height / 2:F1} {Width:F1} {Height:F1}\" {(fixBorder ? "borderWidth=1.5 " : "")}fillAlpha=1 duration=999s}}\n");
             
             int seq = 0;
             foreach (var fillItem in FillDatas)
             {
-                var strokeName = $"{alias}_{seq}";
-                builder.Append($"let {strokeName}={alias}_b{{parent=\"{subContainerName}\" alpha={fillItem.Opacity} fillColor={fillItem.FillColor}");
+                var strokeName = $"{alias}{seq}";
+                builder.Append($"let {strokeName}={alias}b{{parent=\"{subContainerName}\" alpha={fillItem.Opacity:F0} fillColor={fillItem.FillColor} ");
+                if (fixBorder)
+                    builder.Append($"borderColor={fillItem.FillColor}");
                 builder.Append($" d=\"{fillItem.Path}\"}}\n");
                 seq++;
             }

@@ -11,7 +11,7 @@
         public float? borderWidth  {get; set;}
         public int? rotateX  {get; set;}
         public int? rotateY  {get; set;}
-        public int? rotateZ  {get; set;}
+        public float? rotateZ  {get; set;}
         public float? scale  {get; set;}
         public int? zIndex  {get; set;}
         public float? duration  {get; set;}

@@ -67,9 +67,18 @@ namespace Danmakux
             return this;
         }
         */
-        
+
+        public MotionHelper Comment(string str)
+        {
+            _backupBuilder.Append($"//{str}\n");
+            _publicBuilder.Append($"//{str}\n");
+            return this;
+        }
+
         public MotionHelper Apply(float duration,  TextProperty prop = null, string motion = "linear", bool isBackup = false)
         {
+            if (duration < 0)
+                throw new Exception();
             //set b_3_1 {} 0.1s then set b_3_1 {x = 20%, y = 0%, rotateY = 0, alpha = 1} 1s, "ease-out" then set b_3_1{} 2s
             //then set b_3_1 {x = 20%, y = 150%, rotateY = 30, alpha = 0} 2s, "ease-in"
             if (Math.Abs(duration - 999) < 0.1 && isBackup)
@@ -124,7 +133,7 @@ namespace Danmakux
                 if (prop.rotateZ != null && !backupLayerRequired)
                 {
                     builder.Append($"rotateZ={prop.rotateZ},");
-                    prop.rotateX = null;
+                    prop.rotateZ = null;
                     backupLayerRequired = true;
                 }
 
@@ -162,10 +171,14 @@ namespace Danmakux
             }
             builder.Append($"\n");
 
+            if (isBackup && backupLayerRequired)
+            {
+                _allBackupLayerRequired = true;
+            }
             if (!isBackup && !_isBackupManual)
             {
                 if (prop!= null && 
-                    (prop.rotateX != null || prop.rotateY != null || prop.rotateZ != null || prop.scale != null))
+                    (prop.rotateX != null || prop.rotateY != null || prop.rotateZ != null || prop.scale != null)) 
                     _allBackupLayerRequired = true;
                 Apply(duration, prop, motion, true);
                 
